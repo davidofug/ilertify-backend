@@ -1,0 +1,50 @@
+### Create a product
+POST http://127.0.0.1:5000/products
+Content-Type: application/json
+Accept: application/json
+
+{
+    "title": "ronaldkasendwa.com",
+    "expires": "2021,10,15",
+    "price": "140000",
+    "customer": {
+        "first_name": "Ronald",
+        "last_name": "Kasendwa",
+        "gender": "Male",
+        "phone": "+256775101122",
+        "email": "rkasendwa@gmail.com"
+    }
+}
+
+### Get Products
+GET http://127.0.0.1:5000/products
+
+### Get a Product
+GET http://127.0.0.1:5000/products/60a2ccb8ee3408b0c82084dd
+
+### Update a Product
+PUT http://127.0.0.1:5000/products
+Content-Type: application/json
+
+{
+    "id":"60a2ccb8ee3408b0c82084dd",
+    "info": {
+        "customer": {
+            "first_name": "Jimmy",
+            "last_name": "Ssenfuma",
+            "gender": "Male",
+            "phone":"256704255401",
+            "email":"jimmy.ssenfuma@gmail.com"
+        },
+        "title":"jamesssenfuma.com"
+    }
+}
+
+### Delete a Product
+
+DELETE http://127.0.0.1:5000/products
+Content-Type: application/json
+
+{
+    "id": "60a295dfd1ac039b674ed56c"
+}
