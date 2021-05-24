@@ -49,10 +49,37 @@ Content-Type: application/json
     "id": "60a295dfd1ac039b674ed56c"
 }
 
-### Get Users
+### Add a new Member
+POST http://127.0.0.1:5000/members
+
+Content-Type: application/json
+
+{
+
+}
+
+
+### Get Members
 
 GET http://127.0.0.1:5000/members
 
 ### Login
 POST http://127.0.0.1:5000/login
 
+### Update member
+PUT http://127.0.0.1:5000/members
+Content-Type: application/json
+
+{
+
+}
+
+### Delete a member
+
+DELETE http://127.0.0.1:5000/members
+
+Content-Type: application/json
+
+{
+    "id": "60a295dfd1ac039b674ed56c"
+}
