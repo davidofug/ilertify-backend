@@ -1,9 +1,21 @@
 from pymongo import MongoClient
 import urllib.parse
+from dotenv import load_dotenv
 
-username = urllib.parse.quote_plus('wampamba2')
-password = urllib.parse.quote_plus('GQMYagZHto9RovSN')
-mongoURL = "mongodb+srv://{}:{}@lesson0.11nbe.gcp.mongodb.net/shineafrika?retryWrites=true&w=majority".format(username, password)
+from pathlib import Path
+import os
+ 
+load_dotenv()
+env_path = Path('.')/'.env'
+load_dotenv(dotenv_path=env_path)
+
+# username = urllib.parse.quote_plus('wampamba2')
+# password = urllib.parse.quote_plus('GQMYagZHto9RovSN')
+
+USERNAME = urllib.parse.quote_plus(os.getenv("DB_USER"))
+PASSWORD = urllib.parse.quote_plus(os.getenv("DB_PASSWORD"))
+
+mongoURL = "mongodb+srv://{}:{}@lesson0.11nbe.gcp.mongodb.net/shineafrika?retryWrites=true&w=majority".format(USERNAME,PASSWORD)
 
 def connect():
     try :
