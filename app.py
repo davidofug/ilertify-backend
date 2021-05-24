@@ -1,10 +1,10 @@
+from types import MethodDescriptorType
 from flask import Flask, jsonify,request
 from flask_cors import CORS, cross_origin
 
 from bson.objectid import ObjectId
 from db import connect
-
-from users import getUsers
+import members
 
 connection = connect()
 db = connection.shineafrika
@@ -117,9 +117,10 @@ def deleteProduct():
         'msg':response
     })
 
-@app.route('/users')
-def returnUsers():
-    return getUsers()
+@app.route('/users', methods=['GET'])
+def returnMembers():
+    return members.retrieveMembers()
+
 
 if __name__ == '__main__':
     app.run()
