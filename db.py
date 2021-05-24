@@ -9,9 +9,6 @@ load_dotenv()
 env_path = Path('.')/'.env'
 load_dotenv(dotenv_path=env_path)
 
-# username = urllib.parse.quote_plus('wampamba2')
-# password = urllib.parse.quote_plus('GQMYagZHto9RovSN')
-
 USERNAME = urllib.parse.quote_plus(os.getenv("DB_USER"))
 PASSWORD = urllib.parse.quote_plus(os.getenv("DB_PASSWORD"))
 
