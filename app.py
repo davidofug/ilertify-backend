@@ -1,9 +1,10 @@
 from flask import Flask, jsonify,request
 from flask_cors import CORS, cross_origin
 
-
 from bson.objectid import ObjectId
 from db import connect
+
+from users import getUsers
 
 connection = connect()
 db = connection.shineafrika
@@ -115,6 +116,10 @@ def deleteProduct():
         'result': 'successful',
         'msg':response
     })
+
+@app.route('/users')
+def returnUsers():
+    return getUsers()
 
 if __name__ == '__main__':
     app.run()

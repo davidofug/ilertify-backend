@@ -48,3 +48,7 @@ Content-Type: application/json
 {
     "id": "60a295dfd1ac039b674ed56c"
 }
+
+### Get Users
+
+GET http://127.0.0.1:5000/users
