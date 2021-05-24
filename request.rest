@@ -51,4 +51,8 @@ Content-Type: application/json
 
 ### Get Users
 
-GET http://127.0.0.1:5000/users
+GET http://127.0.0.1:5000/members
+
+### Login
+POST http://127.0.0.1:5000/login
+

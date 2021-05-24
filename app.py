@@ -117,9 +117,13 @@ def deleteProduct():
         'msg':response
     })
 
-@app.route('/users', methods=['GET'])
+@app.route('/members', methods=['GET'])
 def returnMembers():
     return members.retrieveMembers()
+
+@app.route('/login', methods=['POST'])
+def Login():
+    return members.login()
 
 
 if __name__ == '__main__':

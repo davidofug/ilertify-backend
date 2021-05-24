@@ -6,6 +6,29 @@ from db import connect
 connection = connect()
 db = connection.shineafrika
 
+def addMember():
+    return 'Register'
+
+def login():
+
+    member = {
+        'id': 1,
+        'username':'Username',
+        'tokens':{
+            'access':'Access',
+            'refresh': 'Refresh'
+        }
+    }
+
+    response = jsonify({
+        'result':'successful',
+        'member': member
+    })
+
+    response.headers.add("Access-Control-Allow-Origin", "*")
+
+    return response
+
 def retrieveMembers():
     json_members = []
     members = db.members.find()
@@ -26,3 +49,9 @@ def retrieveMembers():
     response.headers.add("Access-Control-Allow-Origin", "*")
 
     return response
+
+def updateMember():
+    return 'Update'
+
+def deleteMember():
+    return 'Delete'
