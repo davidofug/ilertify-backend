@@ -1,4 +1,16 @@
-from flask import Flask, jsonify,request
+from flask import Blueprint, jsonify, request
+
+# define the blueprint
+products = Blueprint(name="products", import_name=__name__)
+
+# add view function to the blueprint
+
+@products.route('/', methods=['GET'])
+def returnProducts():
+    output = {"msg":"I'm the test endpoint"}
+    return jsonify(output)
+
+""" from flask import Flask, jsonify,request
 from flask_cors import CORS, cross_origin
 
 from bson.objectid import ObjectId
@@ -125,4 +137,4 @@ def Login():
     return members.login()
 
 if __name__ == '__main__':
-    app.run()
+    app.run() """
