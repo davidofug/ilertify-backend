@@ -2,6 +2,8 @@
 
 # load libraries
 from flask import Flask, jsonify
+from flask_cors import CORS, cross_origin
+
 import sys
 
 from flask.helpers import url_for
@@ -13,6 +15,8 @@ from src.endpoints.members import members
 # init Flask app
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # register blueprints. ensure that all paths are versioned!
 app.register_blueprint(products, url_prefix="/api/v1/products")
