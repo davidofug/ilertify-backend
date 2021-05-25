@@ -1,3 +1,6 @@
+### Better end points
+GET http://192.168.0.19:5000//api/v1/products
+
 ### Create a product
 POST http://127.0.0.1:5000/products
 Content-Type: application/json
