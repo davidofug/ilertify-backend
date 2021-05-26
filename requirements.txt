@@ -1,15 +1,14 @@
 astroid==2.5.2
 certifi==2020.4.5.1
-click==8.0.0
+click==8.0.1
 dnspython==2.1.0
-Flask==2.0.0
+Flask==2.0.1
 Flask-Cors==3.0.10
 isort==5.8.0
-itsdangerous==2.0.0
-Jinja2==3.0.0
-jsonify==0.5
+itsdangerous==2.0.1
+Jinja2==3.0.1
 lazy-object-proxy==1.6.0
-MarkupSafe==2.0.0
+MarkupSafe==2.0.1
 mccabe==0.6.1
 pylint==2.7.4
 pymongo==3.11.4
@@ -19,5 +18,5 @@ sendgrid==6.7.0
 six==1.16.0
 starkbank-ecdsa==1.1.0
 toml==0.10.2
-Werkzeug==2.0.0
+Werkzeug==2.0.1
 wrapt==1.12.1

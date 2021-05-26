@@ -1,32 +1,29 @@
-### Better end points
-GET http://192.168.0.19:5000//api/v1/products
 
 ### Create a product
-POST http://127.0.0.1:5000/products
+POST http://192.168.0.19:5000/api/v1/products/new
 Content-Type: application/json
 Accept: application/json
 
 {
-    "title": "ronaldkasendwa.com",
-    "expires": "2021,10,15",
+    "title": "kqhubafrica.com",
+    "expires": "2021,7,7",
     "price": "140000",
     "customer": {
-        "first_name": "Ronald",
-        "last_name": "Kasendwa",
+        "first_name": "Wabwire",
         "gender": "Male",
         "phone": "+256775101122",
-        "email": "rkasendwa@gmail.com"
+        "email": "wabwire@kqhubafrica.com"
     }
 }
 
-### Get Products
-GET http://127.0.0.1:5000/products
+### Retrieve Products
+GET http://192.168.0.19:5000/api/v1/products
 
 ### Get a Product
-GET http://127.0.0.1:5000/products/60a2ccb8ee3408b0c82084dd
+GET http://192.168.0.19:5000/api/v1/products/60ad26d677a801fc8586ffbe
 
 ### Update a Product
-PUT http://127.0.0.1:5000/products
+PUT http://192.168.0.19:5000/api/v1/products/edit
 Content-Type: application/json
 
 {
@@ -34,10 +31,10 @@ Content-Type: application/json
     "info": {
         "customer": {
             "first_name": "Jimmy",
-            "last_name": "Ssenfuma",
+            "last_name": "Ssenabulya",
             "gender": "Male",
-            "phone":"256704255401",
-            "email":"jimmy.ssenfuma@gmail.com"
+            "phone":"256704255404",
+            "email":"jimmy.ssenabulya@gmail.com"
         },
         "title":"jamesssenfuma.com"
     }
@@ -45,7 +42,7 @@ Content-Type: application/json
 
 ### Delete a Product
 
-DELETE http://127.0.0.1:5000/products
+DELETE http://192.168.0.19:5000/api/v1/products/delete
 Content-Type: application/json
 
 {

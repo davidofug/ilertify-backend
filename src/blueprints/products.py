@@ -1,35 +1,17 @@
 from flask import Blueprint, jsonify, request
+from flask_cors import cross_origin
+from src.db import connect
+from bson.objectid import ObjectId
+
+connection = connect()
+db = connection.shineafrika
 
 # define the blueprint
 products = Blueprint(name="products", import_name=__name__)
 
 # add view function to the blueprint
-
 @products.route('/', methods=['GET'])
 def returnProducts():
-    output = {"msg":"I'm the test endpoint"}
-    return jsonify(output)
-
-""" from flask import Flask, jsonify,request
-from flask_cors import CORS, cross_origin
-
-from bson.objectid import ObjectId
-from db import connect
-import members
-
-connection = connect()
-db = connection.shineafrika
-
-app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-
-@app.route("/")
-def index():
-    return "Ooops! Nothing here"
-
-@app.route('/products', methods=['GET'])
-def getProducts():
     json_products = []
     products = db.products.find()
 
@@ -49,7 +31,7 @@ def getProducts():
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
-@app.route("/products", methods=['POST'])
+@products.route("/new", methods=['POST'])
 @cross_origin()
 def createProduct():
     product_data = request.get_json()
@@ -75,8 +57,8 @@ def createProduct():
         'product': productJSON
     })
 
-@app.route("/products/<id>", methods=['GET'])
-def getProduct(id):
+@products.route("/<id>", methods=['GET'])
+def retrieveProduct(id):
     product = db.products.find_one({'_id': ObjectId(id)})
     json_product = {
         'id': str(product['_id']),
@@ -91,7 +73,7 @@ def getProduct(id):
         'product':json_product
     })
 
-@app.route('/products', methods=['PUT'])
+@products.route('/edit', methods=['PUT'])
 def updateProduct():
     products = request.get_json()
     result = db.products.update_one({'_id': ObjectId(products['id'])}, {"$set": products['info']})
@@ -106,8 +88,7 @@ def updateProduct():
         'result': 'failure'
     })
 
-
-@app.route('/products', methods=['DELETE'])
+@products.route('/delete', methods=['DELETE'])
 def deleteProduct():
     products = request.get_json()
     result = db.products.delete_one({'_id' : ObjectId(products['id'])})
@@ -127,14 +108,3 @@ def deleteProduct():
         'result': 'successful',
         'msg':response
     })
-
-@app.route('/members', methods=['GET'])
-def returnMembers():
-    return members.retrieveMembers()
-
-@app.route('/login', methods=['POST'])
-def Login():
-    return members.login()
-
-if __name__ == '__main__':
-    app.run() """
