@@ -4,6 +4,8 @@ from src.db import connect
 from bson.objectid import ObjectId
 import hashlib
 import os
+import src.helpers as helpers
+import datetime
 
 connection = connect()
 db = connection.shineafrika
@@ -34,9 +36,9 @@ def retrieveMembers():
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
-@members.route("/new", methods=['POST'])
+@members.route('/new', methods=['POST'])
 @cross_origin()
-def createMember():
+def addMember():
     data = request.get_json()
     salt = os.urandom(32)
     password = data['password']
@@ -44,8 +46,8 @@ def createMember():
     password = salt + password
     
     ### Initial access & refresh tokens ###
-    access = ''
-    refresh = ''
+    access = helpers.generateToken({'username':data['username'], 'exp':7200000})
+    refresh = helpers.generateToken({'exp':7200000})
     
     member = db.members.insert_one({
         'username': data['username'],
@@ -70,10 +72,7 @@ def createMember():
             'access': '',
             'refresh': '',
         },
-        'name': {
-            'first': result['first_name'],
-            'last': result['last_name']
-        },
+        'name': result['name'],
         'email': result['email'],
         'phone': result['phone']
     }
@@ -83,7 +82,7 @@ def createMember():
         'member': user
     })
 
-@members.route("/<id>", methods=['GET'])
+@members.route('/<id>', methods=['GET'])
 def retrieveMember(id):
     Member = db.members.find_one({'_id': ObjectId(id)})
     json_Member = {
@@ -99,11 +98,11 @@ def retrieveMember(id):
         'Member':json_Member
     })
 
-@members.router('/login', methods=['POST'])
+@members.route('/login', methods=['POST'])
 def login():
-    member = request.get_json()
-    username = member['username']
-    password = member['password']
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
 
     if(username == '' or password == '') :
         return jsonify({
@@ -112,10 +111,11 @@ def login():
         })
 
     result = db.members.find_one({'username': username})
-    
-    if(result['_id']):
+    print(result)
+    if(result):
         salt = result['password'][:32]
         passwordHash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+        
         if( passwordHash == result['password'][32:]):
             # Generate New Tokens
             # Access and refresh tokens

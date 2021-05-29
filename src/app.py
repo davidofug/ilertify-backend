@@ -3,7 +3,6 @@
 # load libraries
 from flask import Flask, jsonify
 from flask_cors import CORS
-
 import sys
 
 from flask.helpers import url_for

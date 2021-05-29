@@ -50,23 +50,33 @@ Content-Type: application/json
 }
 
 ### Add a new Member
-POST http://127.0.0.1:5000/members
+POST http://192.168.0.13:5000/api/v1/members/new
 Content-Type: application/json
 
 {
-
+    "username": "wampamba",
+    "password": "123456",
+    "email": "davidwampamba@gmail.com",
+    "first_name": "David",
+    "last_name": "Wampamba",
+    "phone": 256704255401
 }
-
 
 ### Get Members
 
-GET http://127.0.0.1:5000/members
+GET http://192.168.0.13:5000/api/v1/members
 
 ### Login
-POST http://127.0.0.1:5000/login
+POST http://192.168.0.13:5000/api/v1/members/login
+Content-Type: application/json
+
+{
+    "username":"David",
+    "password":"Password"
+}
 
 ### Update member
-PUT http://127.0.0.1:5000/members
+PUT http://192.168.0.13:5000/api/v1/members
 Content-Type: application/json
 
 {
@@ -75,7 +85,7 @@ Content-Type: application/json
 
 ### Delete a member
 
-DELETE http://127.0.0.1:5000/members
+DELETE http://192.168.0.13:5000/members
 Content-Type: application/json
 
 {
