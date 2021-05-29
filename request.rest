@@ -67,12 +67,12 @@ Content-Type: application/json
 GET http://192.168.0.11:5000/api/v1/members
 
 ### Login
-POST http://192.168.0.11:5000/api/v1/members/login
+POST http://192.168.0.11:5000/api/v1/members/auth
 Content-Type: application/json
 
 {
-    "username":"David",
-    "password":"Password"
+    "username":"wampamba",
+    "password":"123456"
 }
 
 ### Update member

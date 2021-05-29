@@ -1,3 +1,4 @@
+from enum import unique
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
 from src.db import connect
@@ -6,12 +7,75 @@ import hashlib
 import os
 from src.helpers import generateToken
 import datetime
+from pymongo import TEXT, errors
 
-connection = connect()
-db = connection.shineafrika
-
+# connection = connect()
+# db = connection.shineafrika
+db = connect()
 # define the blueprint
+db.members.create_index([('username', 1)],unique=True)
+db.members.create_index([("phone",1)], unique=True)
+
 members = Blueprint(name="members", import_name=__name__)
+
+@members.route('/new', methods=['POST'])
+@cross_origin()
+def addMember():
+    data = request.get_json()
+    salt = os.urandom(32)
+    password = data['password']
+    password = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+    password = salt + password
+    
+    ### Initial access & refresh tokens ###
+    access = generateToken({'username':data['username'], 'exp':7200000})
+    refresh = generateToken({'exp':7200000}, 2)
+    
+    try:
+        member = db.members.insert_one({
+            'username': data['username'],
+            'password': password,
+            'name' : {
+                'first': data['first_name'],
+                'last': data['last_name'],
+            },
+            'email': data['email'], 
+            'phone' : data['phone'],
+            'tokens':{
+                'access': access,
+                'refresh': refresh
+            },
+        })
+
+        id = member.inserted_id
+        result = db.members.find_one({'_id': ObjectId(id)})
+        user = {
+            'username': result['username'],
+            'tokens': {
+                'access': '',
+                'refresh': '',
+            },
+            'name': result['name'],
+            'email': result['email'],
+            'phone': result['phone'],
+            'tokens':{
+                'acess': access,
+                'refresh': refresh
+            }
+        }
+
+        return jsonify({
+            'result':'successful',
+            'member': user
+        })
+
+    except errors.DuplicateKeyError :
+        print()
+        return jsonify({
+            'result':'failure',
+            'msg': 'Username or Email or Phone number already taken!'
+        })
+
 
 # add view function to the blueprint
 @members.route('/', methods=['GET'])
@@ -36,56 +100,6 @@ def retrieveMembers():
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
-@members.route('/new', methods=['POST'])
-@cross_origin()
-def addMember():
-    data = request.get_json()
-    salt = os.urandom(32)
-    password = data['password']
-    password = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
-    password = salt + password
-    
-    ### Initial access & refresh tokens ###
-    access = generateToken({'username':data['username'], 'exp':7200000})
-    refresh = generateToken({'exp':7200000})
-    
-    member = db.members.insert_one({
-        'username': data['username'],
-        'password': password,
-        'name' : {
-            'first': data['first_name'],
-            'last': data['last_name'],
-        },
-        'email': data['email'], 
-        'phone' : data['phone'],
-        'tokens':{
-            'access': access,
-            'refresh': refresh
-        },
-    })
-
-    id = member.inserted_id
-    result = db.members.find_one({'_id': ObjectId(id)})
-    user = {
-        'username': result['username'],
-        'tokens': {
-            'access': '',
-            'refresh': '',
-        },
-        'name': result['name'],
-        'email': result['email'],
-        'phone': result['phone'],
-        'tokens':{
-            'acess': access,
-            'refresh': refresh
-        }
-    }
-
-    return jsonify({
-        'result':'successful',
-        'member': user
-    })
-
 @members.route('/<id>', methods=['GET'])
 def retrieveMember(id):
     Member = db.members.find_one({'_id': ObjectId(id)})
@@ -102,7 +116,7 @@ def retrieveMember(id):
         'Member':json_Member
     })
 
-@members.route('/login', methods=['POST'])
+@members.route('/auth', methods=['POST'])
 def login():
     data = request.get_json()
     username = data['username']
@@ -115,33 +129,40 @@ def login():
         })
 
     result = db.members.find_one({'username': username})
-    print(result)
+
     if(result):
         salt = result['password'][:32]
         passwordHash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
         
         if( passwordHash == result['password'][32:]):
-            # Generate New Tokens
-            # Access and refresh tokens
-            access = ''
-            refresh = ''
+            access = generateToken({'username':data['username'], 'exp':7200000})
+            refresh = generateToken({'exp':7200000})
 
-            # Update user Tokens
-            
-            user = {
-                'username': result['username'],
-                'tokens': {
-                    'access': access,
-                    'refresh': refresh,
-                },
-                'name': result['name'],
-                'email': result['email'],
-                'phone': result['phone']
+            result['tokens'] = {
+                'action': access,
+                'refresh': refresh
             }
 
+            updated = db.members.update_one({'_id': ObjectId(result['_id'])}, {"$set": result['tokens']})
+            
+            if(updated.modified_count > 0):
+            
+                user = {
+                    'username': result['username'],
+                    'tokens': result['tokens'],
+                    'name': result['name'],
+                    'email': result['email'],
+                    'phone': result['phone']
+                }
+
+                return jsonify({
+                    'result': 'successful',
+                    'user': user
+                })
+            
             return jsonify({
-                'result': 'successful',
-                'user': user
+                'result':'failure',
+                'msg': 'User not found'
             })
 
         return jsonify({
