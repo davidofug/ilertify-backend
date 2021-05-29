@@ -50,7 +50,7 @@ Content-Type: application/json
 }
 
 ### Add a new Member
-POST http://192.168.0.13:5000/api/v1/members/new
+POST http://192.168.0.11:5000/api/v1/members/new
 Content-Type: application/json
 
 {
@@ -64,10 +64,10 @@ Content-Type: application/json
 
 ### Get Members
 
-GET http://192.168.0.13:5000/api/v1/members
+GET http://192.168.0.11:5000/api/v1/members
 
 ### Login
-POST http://192.168.0.13:5000/api/v1/members/login
+POST http://192.168.0.11:5000/api/v1/members/login
 Content-Type: application/json
 
 {
@@ -76,7 +76,7 @@ Content-Type: application/json
 }
 
 ### Update member
-PUT http://192.168.0.13:5000/api/v1/members
+PUT http://192.168.0.11:5000/api/v1/members
 Content-Type: application/json
 
 {
@@ -85,7 +85,7 @@ Content-Type: application/json
 
 ### Delete a member
 
-DELETE http://192.168.0.13:5000/members
+DELETE http://192.168.0.11:5000/members
 Content-Type: application/json
 
 {

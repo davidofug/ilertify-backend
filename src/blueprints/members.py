@@ -4,7 +4,7 @@ from src.db import connect
 from bson.objectid import ObjectId
 import hashlib
 import os
-import src.helpers as helpers
+from src.helpers import generateToken
 import datetime
 
 connection = connect()
@@ -46,8 +46,8 @@ def addMember():
     password = salt + password
     
     ### Initial access & refresh tokens ###
-    access = helpers.generateToken({'username':data['username'], 'exp':7200000})
-    refresh = helpers.generateToken({'exp':7200000})
+    access = generateToken({'username':data['username'], 'exp':7200000})
+    refresh = generateToken({'exp':7200000})
     
     member = db.members.insert_one({
         'username': data['username'],
@@ -74,7 +74,11 @@ def addMember():
         },
         'name': result['name'],
         'email': result['email'],
-        'phone': result['phone']
+        'phone': result['phone'],
+        'tokens':{
+            'acess': access,
+            'refresh': refresh
+        }
     }
 
     return jsonify({

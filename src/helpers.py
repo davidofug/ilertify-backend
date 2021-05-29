@@ -8,12 +8,13 @@ env_path = Path('.')/'.env'
 load_dotenv(dotenv_path=env_path)
 
 def generateToken(payload):
-    SECRET = load_dotenv(os.getenv("SECRET"))
+    SECRET = os.getenv("SECRET")
+    print(SECRET)
     encoded_jwt = jwt.encode(payload, SECRET, algorithm="HS256")
     return encoded_jwt
 
 def verifyToken(token):
-    return status
+    return token
 
 def destroyToken(token):
-    return true
+    return token
