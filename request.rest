@@ -91,3 +91,6 @@ Content-Type: application/json
 {
     "id": "60a295dfd1ac039b674ed56c"
 }
+
+### Get products from live api
+https://ilertify.herokuapp.com/api/v1/products
