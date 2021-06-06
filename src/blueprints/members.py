@@ -1,12 +1,13 @@
 from enum import unique
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
+from werkzeug.wrappers import response
 from src.db import connect
 from bson.objectid import ObjectId
 import hashlib
 import os
 from src.helpers import generateToken
-import datetime
+from datetime import datetime, timedelta
 from pymongo import TEXT, errors
 
 # connection = connect()
@@ -28,8 +29,8 @@ def addMember():
     password = salt + password
     
     ### Initial access & refresh tokens ###
-    access = generateToken({'username':data['username'], 'exp':7200000})
-    refresh = generateToken({'exp':7200000}, 2)
+    access = generateToken({'username':data['username'], 'exp': datetime.utcnow() +  timedelta(hours=2)})
+    refresh = generateToken({'exp': datetime.utcnow() + timedelta(days=7)}, 2)
     
     try:
         member = db.members.insert_one({
@@ -41,7 +42,7 @@ def addMember():
             },
             'email': data['email'], 
             'phone' : data['phone'],
-            'tokens':{
+            'tokens': {
                 'access': access,
                 'refresh': refresh
             },
@@ -117,7 +118,8 @@ def retrieveMember(id):
     })
 
 @members.route('/auth', methods=['POST'])
-def login():
+@cross_origin()
+def auth():
     data = request.get_json()
     username = data['username']
     password = data['password']
@@ -135,34 +137,51 @@ def login():
         passwordHash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
         
         if( passwordHash == result['password'][32:]):
-            access = generateToken({'username':data['username'], 'exp':7200000})
-            refresh = generateToken({'exp':7200000})
+            access = generateToken({'username':data['username'], 'exp': datetime.utcnow() + timedelta(hours=2)})
+            refresh = generateToken({'exp': datetime.utcnow() + timedelta(days=7)},2)
+            id = ObjectId(result['_id'])
 
-            result['tokens'] = {
-                'action': access,
-                'refresh': refresh
-            }
+            if(id):
+                updated = db.members.replace_one(
+                    {'_id': id},
+                    {   
+                        'username': result['username'],
+                        'password': result['password'],
+                        'name': result['name'],
+                        'email': result['email'],
+                        'phone': result['phone'],
+                        'tokens':{
+                            'access': access,
+                            'refresh': refresh
+                        }
+                    }
+                )
 
-            updated = db.members.update_one({'_id': ObjectId(result['_id'])}, {"$set": result['tokens']})
-            
-            if(updated.modified_count > 0):
-            
-                user = {
-                    'username': result['username'],
-                    'tokens': result['tokens'],
-                    'name': result['name'],
-                    'email': result['email'],
-                    'phone': result['phone']
-                }
+                if(updated.modified_count > 0):
+                
+                    user = {
+                        'username': result['username'],
+                        'tokens': result['tokens'],
+                        'name': result['name'],
+                        'email': result['email'],
+                        'phone': result['phone']
+                    }
+
+                    # response.set_cookie(key='access', value=result['tokens']['access'], httponly=True)
+                    # response.set_cookie(key='refresh', value=result['tokens']['refresh'], httponly=True)
+                    return jsonify({
+                        'result': 'successful',
+                        'user': user
+                    })
 
                 return jsonify({
-                    'result': 'successful',
-                    'user': user
+                    'result':'failure',
+                    'msg': 'User not found'
                 })
             
             return jsonify({
-                'result':'failure',
-                'msg': 'User not found'
+                'result': 'failure',
+                'msg': 'Wrong username/password'
             })
 
         return jsonify({

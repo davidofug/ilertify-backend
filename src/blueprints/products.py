@@ -52,10 +52,12 @@ def createProduct():
         'expires': productFound['expires']
     }
 
-    return jsonify({
+    response = jsonify({
         'result':'successful',
         'product': productJSON
     })
+    return response
+
 
 @products.route("/<id>", methods=['GET'])
 def retrieveProduct(id):

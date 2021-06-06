@@ -1,6 +1,6 @@
 
 ### Create a product
-POST http://192.168.0.19:5000/api/v1/products/new
+POST http://192.168.0.10:5000/api/v1/products/new
 Content-Type: application/json
 Accept: application/json
 
@@ -17,7 +17,7 @@ Accept: application/json
 }
 
 ### Retrieve Products
-GET http://192.168.0.19:5000/api/v1/products
+GET http://192.168.0.10:5000/api/v1/products
 
 ### Get a Product
 GET http://192.168.0.19:5000/api/v1/products/60ad26d677a801fc8586ffbe
@@ -50,7 +50,7 @@ Content-Type: application/json
 }
 
 ### Add a new Member
-POST http://192.168.0.11:5000/api/v1/members/new
+POST http://192.168.0.13:5000/api/v1/members/new
 Content-Type: application/json
 
 {
@@ -67,7 +67,7 @@ Content-Type: application/json
 GET http://192.168.0.11:5000/api/v1/members
 
 ### Login
-POST http://192.168.0.11:5000/api/v1/members/auth
+POST http://192.168.0.13:5000/api/v1/members/auth
 Content-Type: application/json
 
 {
